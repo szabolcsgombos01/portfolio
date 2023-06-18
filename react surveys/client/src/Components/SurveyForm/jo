@@ -1,0 +1,73 @@
+import React, { useState } from "react";
+import { useCreateSurveyMutation } from "../../state/surveysApiSlice";
+
+function QuestionnaireForm() {
+  const [questionnaire, setQuestionnaire] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const [createSurvey, { isLoading }] = useCreateSurveyMutation();
+
+  const handleInputChange = (event) => {
+    setQuestionnaire(event.target.value);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    // Ellenőrzések
+    if (questionnaire.trim() === "") {
+      setErrorMessage("A kérdőív nem lehet üres!");
+      return;
+    }
+
+    const lines = questionnaire.split("\n");
+    const name = lines[0];
+    const content = lines.slice(1).join("\n");
+
+    if (name.trim() === "") {
+      setErrorMessage("A kérdőívnek szüksége van egy címre!");
+      return;
+    }
+
+    if (content.trim() === "") {
+      setErrorMessage("A kérdőívnek szüksége van tartalomra!");
+      return;
+    }
+
+    try {
+      const response = await createSurvey({
+        name,
+        content,
+      });
+
+      // Az egyedi azonosító a válaszból generálható
+      const surveyId = response.data.id;
+      console.log("Kérdőív sikeresen mentve. Azonosító:", surveyId);
+
+      setQuestionnaire("");
+      setErrorMessage("");
+    } catch (error) {
+      console.error("Hiba a kérdőív mentése közben:", error);
+    }
+  };
+
+  return (
+    <div className="login-box">
+      <h2>Kérdőív létrehozása</h2>
+      <form onSubmit={handleSubmit}>
+        <textarea
+          value={questionnaire}
+          onChange={handleInputChange}
+          placeholder="Kérdőív szövege..."
+          rows={10}
+        />
+        <button type="submit" disabled={isLoading}>
+          Kérdőív mentése
+        </button>
+      </form>
+      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+    </div>
+  );
+}
+
+export default QuestionnaireForm;

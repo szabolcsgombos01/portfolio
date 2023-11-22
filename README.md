@@ -1,5 +1,5 @@
 # portfolio
 
-The files are my property. 
+A fájlok az én tulajdonomat képzik/The files are my property. 
 
-Use of the codes is strictly FORBIDDEN!!
+Kódok felhasználása szigorúan TILOS!!/Use of the codes is strictly FORBIDDEN!!
